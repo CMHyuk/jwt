@@ -1,4 +1,4 @@
-package com.example.jwt;
+package com.example.jwt.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,7 +12,7 @@ public class AppConfig {
     private byte[] jwtKey;
 
     public void setJwtKey(String jwtKey) {
-        Base64.getDecoder().decode(jwtKey);
+        this.jwtKey = Base64.getDecoder().decode(jwtKey);
     }
 
     public byte[] getJwtKey() {

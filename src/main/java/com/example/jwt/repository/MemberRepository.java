@@ -1,5 +1,6 @@
-package com.example.jwt;
+package com.example.jwt.repository;
 
+import com.example.jwt.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

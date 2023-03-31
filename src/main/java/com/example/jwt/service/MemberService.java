@@ -1,5 +1,8 @@
-package com.example.jwt;
+package com.example.jwt.service;
 
+import com.example.jwt.repository.MemberRepository;
+import com.example.jwt.dto.MemberSaveRequest;
+import com.example.jwt.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

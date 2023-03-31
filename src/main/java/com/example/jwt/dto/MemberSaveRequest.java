@@ -1,4 +1,4 @@
-package com.example.jwt;
+package com.example.jwt.dto;
 
 import lombok.Getter;
 

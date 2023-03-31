@@ -1,16 +1,19 @@
-package com.example.jwt;
+package com.example.jwt.config;
 
+import com.example.jwt.dto.LoginCheck;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+@Slf4j
 @RequiredArgsConstructor
 public class Config implements HandlerMethodArgumentResolver {
 
@@ -18,12 +21,17 @@ public class Config implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return false;
+        log.info("supportsParameter 실행");
+        boolean hasLoginAnnotation = parameter.hasParameterAnnotation(Login.class);
+        boolean hasLoginType = LoginCheck.class.isAssignableFrom(parameter.getParameterType());
+        return hasLoginAnnotation && hasLoginType;
     }
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        String jws = webRequest.getHeader("Authorization");
+        log.info("resolveArgument 실행");
+        //헤더로 토큰 받아서 검증
+        String jws = webRequest.getHeader("Auth");
         if (jws == null || jws.equals("")) {
             throw new IllegalArgumentException();
         }
@@ -33,11 +41,10 @@ public class Config implements HandlerMethodArgumentResolver {
                     .setSigningKey(appConfig.getJwtKey())
                     .build()
                     .parseClaimsJws(jws);
-            return claims.getBody().getId();
+            String memberId = claims.getBody().getSubject();
+            return new LoginCheck(Long.parseLong(memberId));
         } catch (JwtException e) {
             throw new RuntimeException("인증이 필요합니다.");
         }
-
-        return null;
     }
 }
